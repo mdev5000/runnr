@@ -1,8 +1,8 @@
 # runnr
 
-`runnr` is simple task runnr for go (similar to packages like rake).
+`runnr` is simple task runner for go (similar to packages like rake).
 
-Basically a small wrap around a `cobra` cli application.
+Basically a small wrapper around a `cobra` cli application.
 
 # Getting started
 
@@ -23,11 +23,13 @@ module commands get registered.
 
 Also you can register a `cobra.Command` directly.
 
+`runnr/main.go`
 ```go
 package main
 
 import (
 	"bitbucket.org/mdev5000/runnr"
+	"github.com/spf13/cobra"
 	"somecommands"
 	"somecommands2"
 	"somecommands3"
@@ -55,8 +57,8 @@ func main() {
 }
 ```
 
-Give the example above you could run the **hello** command like you would
-any *cobra* subcommand.
+Given the example above you could run the **hello** command like you would
+any `cobra` subcommand.
 
 ```bash
 runnr hello
@@ -70,6 +72,10 @@ runnr hello -r
 
 For more examples of modules and packages registering commands see the
 **example/** folder.
+
+---
+
+# Development
 
 ## Testing
 
