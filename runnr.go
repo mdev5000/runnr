@@ -30,6 +30,10 @@ func NewRunner(ctx context.Context) *Runner {
 	}
 }
 
+func (r *Runner) AddCommand(cmd *cobra.Command) {
+	r.rootCmd.AddCommand(cmd)
+}
+
 func (r *Runner) Register(c CommandRegisterer) Registration {
 	reg := newRegistration(c.GetCommands(r.ctx))
 	r.registrations = append(r.registrations, reg)
