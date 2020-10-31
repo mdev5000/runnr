@@ -77,9 +77,8 @@ For more examples of modules and packages registering commands see the
 
 # Development
 
-## Testing
+## Running quick tests.
 
 ```bash
-cd examples/example1
-go run ../../runnr/runnr.go -h
+./simpletest.sh
 ```
