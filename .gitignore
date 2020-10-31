@@ -1,0 +1,10 @@
+
+# misc files
+.DS_Store
+
+# IDE files
+/.idea/
+
+# Project generated files
+/examples/example1/.tmpbins/
+/runnr-local
