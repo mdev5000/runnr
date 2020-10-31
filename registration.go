@@ -6,8 +6,8 @@ type filterFunc = func(name string) bool
 
 type Registration interface {
 	UnderParent(parentCmdName string) Registration
-	Only(commandsNames []string) Registration
-	Exclude(commandsNames []string) Registration
+	Only(commandsNames ...string) Registration
+	Exclude(commandsNames ...string) Registration
 }
 
 type registration struct {
@@ -31,7 +31,7 @@ func (r *registration) UnderParent(parentCmdName string) Registration {
 	return r
 }
 
-func (r *registration) Only(commandsNames []string) Registration {
+func (r *registration) Only(commandsNames ...string) Registration {
 	r.filterFuncs = append(r.filterFuncs, func(cmdName string) bool {
 		for _, name := range commandsNames {
 			if cmdName == name {
@@ -43,7 +43,7 @@ func (r *registration) Only(commandsNames []string) Registration {
 	return r
 }
 
-func (r *registration) Exclude(commandsNames []string) Registration {
+func (r *registration) Exclude(commandsNames ...string) Registration {
 	r.filterFuncs = append(r.filterFuncs, func(cmdName string) bool {
 		for _, name := range commandsNames {
 			if cmdName == name {
