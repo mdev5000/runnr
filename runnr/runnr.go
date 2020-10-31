@@ -150,12 +150,12 @@ func fileExists(path string) bool {
 
 func rebuildApp(outPathFull, outPath, exePath string) {
 	os.Remove(outPathFull)
-	fmt.Println("rebuilding....")
+	fmt.Println("Recompiling....")
 	ensureOk(runCommand("go", "build", "-o", outPath, exePath))
 	if !fileExists(outPathFull) {
 		panic("failed to build")
 	}
-	fmt.Println("rebuilding done.")
+	fmt.Println("Recompiling done.")
 }
 
 func runCommand(cmd string, args ...string) error {
