@@ -5,7 +5,7 @@ echo ""
 
 echo "[TEST] create new project:"
 echo ""
-go run ../runnr/runnr.go -n
+go run ../runnr/runnr.go g new
 echo ""
 
 echo "[TEST] running help:"
@@ -23,3 +23,10 @@ echo ""
 cd ../
 cd examples/example1
 go run ../../runnr/runnr.go something -r
+echo ""
+
+echo "[TEST] can run it statically"
+echo ""
+cd ../../
+go run ./runnr/runnr.go g s run ./tmp/runnr/main.go ./tmp/statictest -- hello -r
+echo ""

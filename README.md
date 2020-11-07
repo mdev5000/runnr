@@ -4,19 +4,19 @@
 
 Basically a small wrapper around a `cobra` cli application.
 
-# Getting started
+## Getting started
 
 ```bash
 go get bitbucket.org/mdev5000/runnr
 go get bitbucket.org/mdev5000/runnr/runnr
 
 # create a new runnr project
-runnr -n
+runnr g new 
 ```
 
 By default `runnr` creates a `runnr/main.go` and a `runnr.yml`.
 
-# Registering commands 
+## Registering commands 
 
 Different module commands can be registered. You can also limit which
 module commands get registered.
@@ -75,7 +75,27 @@ For more examples of modules and packages registering commands see the
 
 ---
 
-# Development
+## Running static commands
+
+You can run a static project using the static command
+
+```bash
+alias myapp="runnr g s run ~/path/to/main.go ~/path/to/myapp --"
+```
+
+Then you can run `myapp` like a `runnr` command:
+
+```bash
+# reload the app
+myapp -r
+
+# show app help
+myapp -h
+```
+
+---
+
+## Development
 
 ## Running quick tests.
 

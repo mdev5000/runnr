@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
@@ -14,8 +15,8 @@ import (
 const ConfigFileName = "runnr.yml"
 
 type config struct {
-	Outpath     string     `yml:"outpath"`
-	Executable  string     `yml:"executable"`
+	Outpath    string `yml:"outpath"`
+	Executable string `yml:"executable"`
 }
 
 func ensureOk(err error) {
@@ -24,12 +25,15 @@ func ensureOk(err error) {
 	}
 }
 
-func main() {
-	wd, err := os.Getwd()
-	ensureOk(err)
-	configFile := filepath.Join(wd, ConfigFileName)
+var configFile, workingDir string
 
-	if tryInitialize(wd, configFile) {
+func main() {
+	var err error
+	workingDir, err = os.Getwd()
+	ensureOk(err)
+	configFile = filepath.Join(workingDir, ConfigFileName)
+
+	if checkForGlobal() {
 		return
 	}
 
@@ -45,9 +49,10 @@ func main() {
 
 	outPath := config.Outpath
 	exePath := config.Executable
-	fullOutPath := filepath.Join(wd, outPath)
+	fullOutPath := filepath.Join(workingDir, outPath)
 
-	if shouldRecompile() {
+	recompile, _ := shouldRecompile(os.Args)
+	if recompile {
 		rebuildApp(fullOutPath, outPath, exePath)
 	}
 
@@ -55,18 +60,51 @@ func main() {
 		rebuildApp(fullOutPath, outPath, exePath)
 	}
 
-	ensureOk(syscall.Exec(outPath, os.Args, os.Environ()))
+	//ensureOk(syscall.Exec(outPath, os.Args, os.Environ()))
+	runExe(outPath, os.Args)
 }
 
-func tryInitialize(workingDir string, configPath string) bool {
+func checkForGlobal() bool {
 	if len(os.Args) < 2 {
 		return false
 	}
-	if !(os.Args[1] == "-n" || os.Args[1] == "--new") {
+	if !(os.Args[1] == "g" || os.Args[1] == "global") {
 		return false
 	}
+	runGlobal()
+	return true
+}
+
+func runGlobal() {
+	cmdGlobalRoot := cobra.Command{
+		Use:   "global",
+		Short: "Global runnr commands",
+		Aliases: []string{"g"},
+	}
+
+	newCmd := &cobra.Command{
+		Use:   "new",
+		Short: "generate a new local project",
+		Run: func(cmd *cobra.Command, args []string) {
+			newProject()
+		},
+	}
+
+	cmdGlobalRoot.AddCommand(newCmd)
+	s := &staticCmd{}
+	cmdGlobalRoot.AddCommand(s.Cmd())
+
+	rootCmd := cobra.Command{
+		Use: "runnr",
+	}
+	rootCmd.AddCommand(&cmdGlobalRoot)
+
+	ensureOk(cmdGlobalRoot.Execute())
+}
+
+func newProject() {
 	fmt.Println("Initializing...")
-	if fileExists(configPath) {
+	if fileExists(configFile) {
 		panic(fmt.Errorf("cannot initialize config file '%s' already exists", ConfigFileName))
 	}
 	runnrLocalDir := "runnr"
@@ -104,28 +142,27 @@ func main() {
 }
 `), 0775))
 	out, err := yaml.Marshal(&config{
-		Outpath: "./.tmpbins/runnr-local",
-		Executable:    "./" + runnrLocalApp,
+		Outpath:    "./.tmpbins/runnr-local",
+		Executable: "./" + runnrLocalApp,
 	})
 	ensureOk(err)
-	ensureOk(ioutil.WriteFile(configPath, out, 0644))
+	ensureOk(ioutil.WriteFile(configFile, out, 0644))
 	fmt.Println("Done.")
-	return true
 }
 
-func shouldRecompile() bool {
-	if len(os.Args) < 2 {
-	return false
+func shouldRecompile(args []string) (bool, []string) {
+	if len(args) < 2 {
+		return false, args
 	}
-	if os.Args[1] == "-r" || os.Args[1] == "--recompile" {
-		return true
+	//if args[1] == "-r" || args[1] == "--recompile" {
+	//	return true, args
+	//}
+	lastArgIndex := len(args) - 1
+	if args[lastArgIndex] == "-r" || args[lastArgIndex] == "--recompile" {
+		args = args[0 : len(args)-1]
+		return true, args
 	}
-	lastArgIndex := len(os.Args) - 1
-	if os.Args[lastArgIndex] == "-r" || os.Args[lastArgIndex] == "--recompile" {
-		os.Args = os.Args[0:len(os.Args) - 1]
-		return true
-	}
-	return false
+	return false, args
 }
 
 func validateConfig(config *config) {
@@ -172,3 +209,39 @@ func runCommand(cmd string, args ...string) error {
 	return nil
 }
 
+func runExe(outPath string, args []string) {
+	ensureOk(syscall.Exec(outPath, args, os.Environ()))
+}
+
+// Static
+
+type staticCmd struct {}
+
+func (s *staticCmd) Cmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use: "static",
+		Short: "Commands for running static projects",
+		Aliases: []string{"s"},
+	}
+	cmd.AddCommand(&cobra.Command{
+		Use: "run [gofile] [outpath]",
+		Short: "Run a static command",
+		Args: cobra.MinimumNArgs(2),
+		Run: s.runStatic,
+	})
+	return cmd
+}
+
+func (s *staticCmd) runStatic(cmd *cobra.Command, args []string) {
+	pathToApp := args[0]
+	outPath := args[1]
+	appArgs := os.Args[6:] // ignore the: runnr g static run [gofile] [outpath] --
+	recompile, newAppArgs := shouldRecompile(appArgs)
+	if recompile {
+		rebuildApp(outPath, outPath, pathToApp)
+	}
+	if !fileExists(outPath) {
+		rebuildApp(outPath, outPath, pathToApp)
+	}
+	runExe(outPath, newAppArgs)
+}
