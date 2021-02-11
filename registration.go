@@ -4,9 +4,17 @@ import "github.com/spf13/cobra"
 
 type filterFunc = func(name string) bool
 
+
+// Controls the registration of a group of tasks.
+// @todo add example for UnderParent
 type Registration interface {
+	// Register all the commands under a parent task.
 	UnderParent(parentCmdName string) Registration
+
+	// Include only commands with the given names.
 	Only(commandsNames ...string) Registration
+
+	// Exclude command with the given names.
 	Exclude(commandsNames ...string) Registration
 }
 

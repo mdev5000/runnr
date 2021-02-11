@@ -7,8 +7,8 @@ Basically a small wrapper around a `cobra` cli application.
 ## Getting started
 
 ```bash
-go get bitbucket.org/mdev5000/runnr
-go get bitbucket.org/mdev5000/runnr/runnr
+go get github.com/mdev5000/runnr
+go get github.com/mdev5000/runnr/runnr
 
 # create a new runnr project
 runnr g new 
@@ -28,7 +28,7 @@ Also you can register a `cobra.Command` directly.
 package main
 
 import (
-	"bitbucket.org/mdev5000/runnr"
+	"github.com/mdev5000/runnr"
 	"github.com/spf13/cobra"
 	"somecommands"
 	"somecommands2"

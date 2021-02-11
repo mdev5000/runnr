@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bitbucket.org/mdev5000/runnr"
-	"bitbucket.org/mdev5000/runnr/examples/example1/mycommands"
+	"github.com/mdev5000/runnr"
+	"github.com/mdev5000/runnr/examples/example1/mycommands"
 	"context"
 )
 
