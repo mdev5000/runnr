@@ -2,7 +2,7 @@ package runnr_test
 
 import (
 	"bytes"
-	"github.com/mdev5000/runnr"
+	"github.com/mdev5000/runnr/running"
 	"github.com/stretchr/testify/require"
 	"io"
 	"os"
@@ -43,8 +43,8 @@ func runRunnrCommand(t *testing.T, relativePathToRunnr string, runnrArgs ...stri
 }
 
 func resetAndMoveIntoTmpDir(t *testing.T) string {
-	runnr.RunCommand("rm", "-rf", "_tmp")
-	require.Nil(t, runnr.RunCommand("mkdir", "_tmp"))
+	running.RunCommand("rm", "-rf", "_tmp")
+	require.Nil(t, running.RunCommand("mkdir", "_tmp"))
 	os.Chdir("_tmp")
 	wd, err := os.Getwd()
 	require.Nil(t, err)

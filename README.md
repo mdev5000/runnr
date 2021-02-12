@@ -1,8 +1,7 @@
-# runnr
+# Simple task runner
 
-`runnr` is simple task runner for go (similar to packages like rake).
-
-Basically a small wrapper around a `cobra` cli application.
+`runnr` is simple task runner for go (similar to packages like rake). It's a small wrapper around a `cobra` cli
+application, to create more flexible application build commands.
 
 ## Getting started
 
@@ -10,11 +9,15 @@ Basically a small wrapper around a `cobra` cli application.
 go get github.com/mdev5000/runnr
 go get github.com/mdev5000/runnr/runnr
 
-# create a new runnr project
+# Create a new runnr project.
 runnr g new 
+
+# Run the example.
+runnr hello
 ```
 
-By default `runnr` creates a `runnr/main.go` and a `runnr.yml`.
+By default `runnr` creates a local exe at `internal/cmd/runnr_local/main.go`. You can move and configure this in
+`runnr.yml`.
 
 ## Registering commands 
 
@@ -64,7 +67,7 @@ any `cobra` subcommand.
 runnr hello
 ```
 
-If you wanted to recompile and then run it you could do:
+You can recompile at anytime by appending `-r` after the command.
 
 ```bash
 runnr hello -r
@@ -86,19 +89,9 @@ alias myapp="runnr g s run ~/path/to/main.go ~/path/to/myapp --"
 Then you can run `myapp` like a `runnr` command:
 
 ```bash
-# reload the app
+# Recompile your application.
 myapp -r
 
-# show app help
+# Show the help for your application (if it exists).
 myapp -h
-```
-
----
-
-## Development
-
-## Running quick tests.
-
-```bash
-./simpletest.sh
 ```

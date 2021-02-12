@@ -1,4 +1,4 @@
-package runnr
+package running
 
 import (
 	"github.com/blang/vfs"

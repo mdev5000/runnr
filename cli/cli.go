@@ -3,7 +3,7 @@ package cli
 import (
 	"fmt"
 	"github.com/blang/vfs"
-	"github.com/mdev5000/runnr"
+	"github.com/mdev5000/runnr/running"
 	"os"
 	"path/filepath"
 )
@@ -14,7 +14,7 @@ func Run(fs vfs.Filesystem, workingDir string) error {
 		return err
 	}
 
-	config, err := runnr.ReadConfig(fs)
+	config, err := running.ReadConfig(fs)
 	if err != nil {
 		return err
 	}
@@ -30,7 +30,7 @@ func Run(fs vfs.Filesystem, workingDir string) error {
 		}
 	}
 
-	return runnr.RunExe(outPath, os.Args)
+	return running.RunExe(outPath, os.Args)
 }
 
 func shouldRecompile(args []string) (bool, []string) {
@@ -56,7 +56,7 @@ func fileExists(path string) bool {
 func rebuildApp(outPathFull, outPath, exePath string) error {
 	os.Remove(outPathFull)
 	fmt.Println("Recompiling....")
-	if err := runnr.RunCommand("go", "build", "-o", outPath, exePath); err != nil {
+	if err := running.RunCommand("go", "build", "-o", outPath, exePath); err != nil {
 		return err
 	}
 	if !fileExists(outPathFull) {

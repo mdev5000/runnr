@@ -3,7 +3,7 @@ package cli
 import (
 	"fmt"
 	"github.com/blang/vfs"
-	"github.com/mdev5000/runnr"
+	"github.com/mdev5000/runnr/running"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -31,8 +31,8 @@ func runGlobal(fs vfs.Filesystem, workingDir string) error {
 		Short: "generate a new local project",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Println("Initializing...")
-			settings := runnr.NewProjectSettings{}
-			if err := runnr.SetupNewProject(fs, workingDir, settings); err != nil {
+			settings := running.NewProjectSettings{}
+			if err := running.SetupNewProject(fs, workingDir, settings); err != nil {
 				return err
 			}
 			fmt.Println("Done.")
@@ -88,5 +88,5 @@ func (s *staticCmd) runStatic(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	}
-	return runnr.RunExe(outPath, newAppArgs)
+	return running.RunExe(outPath, newAppArgs)
 }
