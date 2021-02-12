@@ -43,7 +43,7 @@ func runRunnrCommand(t *testing.T, relativePathToRunnr string, runnrArgs ...stri
 }
 
 func resetAndMoveIntoTmpDir(t *testing.T) string {
-	require.Nil(t, runnr.RunCommand("rm", "-rf", "_tmp"))
+	runnr.RunCommand("rm", "-rf", "_tmp")
 	require.Nil(t, runnr.RunCommand("mkdir", "_tmp"))
 	os.Chdir("_tmp")
 	wd, err := os.Getwd()
@@ -106,7 +106,7 @@ hello world
 
 	t.Run("can run statically", func(t *testing.T) {
 		staticPath := "./_tmp/internal/cmd/runnr_local/main.go"
-		staticExe := "./tmp/statictest"
+		staticExe := "./_tmp/statictest"
 		output := runRunnrCommand(t, "",
 			"g", "s", "run", staticPath, staticExe, "--", "hello", "-r")
 		require.Equal(t, output, strings.TrimSpace(`
