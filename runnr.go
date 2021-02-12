@@ -12,10 +12,12 @@ type Runner struct {
 	ctx           context.Context
 }
 
+// Interface implemented by third parties to register tasks (tasks are basically just cobra comands).
 type CommandRegisterer interface {
 	GetCommands(ctx context.Context) []*cobra.Command
 }
 
+// Create a new runnr application.
 func NewRunner(ctx context.Context) *Runner {
 	runnrCmd := &cobra.Command{
 		Use: "runnr",
