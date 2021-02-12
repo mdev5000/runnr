@@ -36,6 +36,10 @@ func runGlobal(fs vfs.Filesystem, workingDir string) error {
 				return err
 			}
 			fmt.Println("Done.")
+			fmt.Println("You can get started by running:")
+			fmt.Println("")
+			fmt.Println("  runnr hello")
+			fmt.Println("")
 			return nil
 		},
 	}
@@ -84,5 +88,5 @@ func (s *staticCmd) runStatic(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	}
-	return runExe(outPath, newAppArgs)
+	return runnr.RunExe(outPath, newAppArgs)
 }

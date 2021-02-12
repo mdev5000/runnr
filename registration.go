@@ -4,7 +4,6 @@ import "github.com/spf13/cobra"
 
 type filterFunc = func(name string) bool
 
-
 // Controls the registration of a group of tasks.
 // @todo add example for UnderParent
 type Registration interface {
@@ -20,13 +19,11 @@ type Registration interface {
 
 type registration struct {
 	filterFuncs []filterFunc
-	commands []*cobra.Command
-	parentName string
+	commands    []*cobra.Command
+	parentName  string
 }
 
-
 var _ Registration = &registration{}
-
 
 func newRegistration(cmds []*cobra.Command) *registration {
 	return &registration{

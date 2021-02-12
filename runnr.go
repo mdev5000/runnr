@@ -23,8 +23,8 @@ func NewRunner(ctx context.Context) *Runner {
 	runnrCmd.PersistentFlags().BoolP("recompile", "r", false, "Recompile the tasks.")
 	runnrCmd.PersistentFlags().BoolP("new", "n", false, "Create a instance")
 	return &Runner{
-		InstanceName: "default",
-		rootCmd: runnrCmd,
+		InstanceName:  "default",
+		rootCmd:       runnrCmd,
 		registrations: nil,
 		ctx:           nil,
 	}

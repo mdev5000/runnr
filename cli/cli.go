@@ -5,9 +5,7 @@ import (
 	"github.com/blang/vfs"
 	"github.com/mdev5000/runnr"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"syscall"
 )
 
 func Run(fs vfs.Filesystem, workingDir string) error {
@@ -26,19 +24,13 @@ func Run(fs vfs.Filesystem, workingDir string) error {
 	fullOutPath := filepath.Join(workingDir, outPath)
 
 	recompile, _ := shouldRecompile(os.Args)
-	if recompile {
+	if recompile || !fileExists(fullOutPath) {
 		if err := rebuildApp(fullOutPath, outPath, exePath); err != nil {
 			return err
 		}
 	}
 
-	if !fileExists(fullOutPath) {
-		if err := rebuildApp(fullOutPath, outPath, exePath); err != nil {
-			return err
-		}
-	}
-
-	return runExe(outPath, os.Args)
+	return runnr.RunExe(outPath, os.Args)
 }
 
 func shouldRecompile(args []string) (bool, []string) {
@@ -64,7 +56,7 @@ func fileExists(path string) bool {
 func rebuildApp(outPathFull, outPath, exePath string) error {
 	os.Remove(outPathFull)
 	fmt.Println("Recompiling....")
-	if err := runCommand("go", "build", "-o", outPath, exePath); err != nil {
+	if err := runnr.RunCommand("go", "build", "-o", outPath, exePath); err != nil {
 		return err
 	}
 	if !fileExists(outPathFull) {
@@ -72,22 +64,4 @@ func rebuildApp(outPathFull, outPath, exePath string) error {
 	}
 	fmt.Println("Recompiling done.")
 	return nil
-}
-
-func runCommand(cmd string, args ...string) error {
-	pre := exec.Command(cmd, args...)
-	pre.Stdin = os.Stdin
-	pre.Stdout = os.Stdout
-	pre.Stderr = os.Stderr
-	if err := pre.Start(); err != nil {
-		return err
-	}
-	if err := pre.Wait(); err != nil {
-		return err
-	}
-	return nil
-}
-
-func runExe(outPath string, args []string) error {
-	return syscall.Exec(outPath, args, os.Environ())
 }
