@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 type MyCommands struct {
@@ -28,7 +27,5 @@ func (c *MyCommands) GetCommands(ctx context.Context) []*cobra.Command {
 }
 
 func (c *MyCommands) something(cmd *cobra.Command, args []string) {
-	wd, _ := os.Getwd()
-	fmt.Println("working dir: ", wd)
 	fmt.Println("something")
 }

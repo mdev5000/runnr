@@ -105,10 +105,11 @@ hello world
 	os.Chdir("..")
 
 	t.Run("can run statically", func(t *testing.T) {
+		// go run ./runnr/runnr.go g s run ./ ./tmp/runnr/main.go ./tmp/statictest -- hello -r
 		staticPath := "./_tmp/internal/cmd/runnr_local/main.go"
 		staticExe := "./_tmp/statictest"
 		output := runRunnrCommand(t, "",
-			"g", "s", "run", staticPath, staticExe, "--", "hello", "-r")
+			"g", "s", "run", "./", staticPath, staticExe, "--", "hello", "-r")
 		require.Equal(t, output, strings.TrimSpace(`
 Recompiling....
 Recompiling done.
@@ -123,7 +124,6 @@ func Test_canRunExample1(t *testing.T) {
 	require.Equal(t, output, strings.TrimSpace(`
 Recompiling....
 Recompiling done.
-working dir:  /Users/matt/devtmp/go/runnr/examples/example1
 something
 `)+"\n")
 }

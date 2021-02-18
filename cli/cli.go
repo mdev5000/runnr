@@ -5,6 +5,7 @@ import (
 	"github.com/blang/vfs"
 	"github.com/mdev5000/runnr/running"
 	"os"
+	"os/exec"
 	"path/filepath"
 )
 
@@ -64,4 +65,24 @@ func rebuildApp(outPathFull, outPath, exePath string) error {
 	}
 	fmt.Println("Recompiling done.")
 	return nil
+}
+
+func rebuildApp2(workingDir, outPathFull, pathToGoFile string) {
+	fmt.Println("Recompiling....")
+	pre := exec.Command("go", "build", "-o", outPathFull, pathToGoFile)
+	pre.Stdin = os.Stdin
+	pre.Stdout = os.Stdout
+	pre.Stderr = os.Stderr
+	pre.Env = os.Environ()
+	pre.Dir = workingDir
+	if err := pre.Start(); err != nil {
+		panic(err)
+	}
+	if err := pre.Wait(); err != nil {
+		panic(err)
+	}
+	if !fileExists(outPathFull) {
+		panic("failed to build")
+	}
+	fmt.Println("Recompiling done.")
 }
