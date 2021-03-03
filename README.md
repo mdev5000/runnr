@@ -40,12 +40,11 @@ import (
 )
 
 func main() {
-	ctx := context.Background()
-	runner := runnr.NewRunner(ctx)
+	runner := runnr.NewRunner()
 
-	runner.Register(somecommands.Commands())
-	runner.Register(somecommands2.Commands()).Only("first", "second")
-	runner.Register(somecommands2.Commands()).Exclude("third", "fourth")
+	runner.Register(somecommands.Commands)
+	runner.Register(somecommands2.Commands).Only("first", "second")
+	runner.Register(somecommands2.Commands).Exclude("third", "fourth")
 
 	runner.AddCommand(&cobra.Command{
 		Use: "hello",
@@ -54,7 +53,8 @@ func main() {
 		},
 	})
 
-	if err := runner.Run(); err != nil {
+	ctx := context.Background()
+	if err := runner.Run(ctx); err != nil {
 		panic(err)
 	}
 }

@@ -92,20 +92,19 @@ func runGlobal(fs vfs.Filesystem, workingDir string) error {
 //	return running.RunExe(outPath, newAppArgs)
 //}
 
-
-type staticCmd struct {}
+type staticCmd struct{}
 
 func (s *staticCmd) Cmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "static",
-		Short: "Commands for running static projects",
+		Use:     "static",
+		Short:   "Commands for running static projects",
 		Aliases: []string{"s"},
 	}
 	cmd.AddCommand(&cobra.Command{
-		Use: "run [working_dir] [gofile] [outpath]",
+		Use:   "run [working_dir] [gofile] [outpath]",
 		Short: "Run a static command",
-		Args: cobra.MinimumNArgs(2),
-		RunE: s.runStatic,
+		Args:  cobra.MinimumNArgs(2),
+		RunE:  s.runStatic,
 	})
 	return cmd
 }

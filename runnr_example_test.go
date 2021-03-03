@@ -8,8 +8,7 @@ import (
 )
 
 func Example_settingsUpApplication() {
-	ctx := context.Background()
-	runner := runnr.NewRunner(ctx)
+	runner := runnr.NewRunner()
 
 	runner.AddCommand(&cobra.Command{
 		Use: "hello",
@@ -19,14 +18,13 @@ func Example_settingsUpApplication() {
 		},
 	})
 
-	if err := runner.Run(); err != nil {
+	ctx := context.Background()
+	if err := runner.Run(ctx); err != nil {
 		panic(err)
 	}
 }
 
-type ThirdParty struct{}
-
-func (t *ThirdParty) GetCommands(ctx context.Context) []*cobra.Command {
+func GetCommands() []*cobra.Command {
 	first := &cobra.Command{
 		Use: "first",
 	}
@@ -35,22 +33,19 @@ func (t *ThirdParty) GetCommands(ctx context.Context) []*cobra.Command {
 	}
 	return []*cobra.Command{first, second}
 }
-func NewThirdParty() runnr.CommandRegisterer {
-	return &ThirdParty{}
-}
 
 func Example_registerThirdPartyCommands() {
-	ctx := context.Background()
-	runner := runnr.NewRunner(ctx)
+	runner := runnr.NewRunner()
 
 	// Register the third party commands under a root task called tp and exclude the "second" command.
 	//
 	// For example you would run the "first" command as follows:
 	//   runnr tp first
 	//
-	runner.Register(NewThirdParty()).UnderParent("tp").Exclude("second")
+	runner.Register(GetCommands).UnderParent("tp").Exclude("second")
 
-	if err := runner.Run(); err != nil {
+	ctx := context.Background()
+	if err := runner.Run(ctx); err != nil {
 		panic(err)
 	}
 }

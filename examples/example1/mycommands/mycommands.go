@@ -1,31 +1,21 @@
 package mycommands
 
 import (
-	"context"
 	"fmt"
 	"github.com/spf13/cobra"
 )
 
-type MyCommands struct {
-	ctx context.Context
-}
-
-func Commands() *MyCommands {
-	return &MyCommands{}
-}
-
-func (c *MyCommands) GetCommands(ctx context.Context) []*cobra.Command {
-	c.ctx = ctx
-
+func Commands() []*cobra.Command {
 	something := &cobra.Command{
-		Use: "something",
+		Use:   "something",
 		Short: "Does something pretty cool",
-		Run: c.something,
+		RunE:  something,
 	}
 
-	return []*cobra.Command {something}
+	return []*cobra.Command{something}
 }
 
-func (c *MyCommands) something(cmd *cobra.Command, args []string) {
+func something(cmd *cobra.Command, args []string) error {
 	fmt.Println("something")
+	return nil
 }

@@ -9,16 +9,13 @@ type Runner struct {
 	InstanceName  string
 	rootCmd       *cobra.Command
 	registrations []*registration
-	ctx           context.Context
 }
 
 // Interface implemented by third parties to register tasks (tasks are basically just cobra comands).
-type CommandRegisterer interface {
-	GetCommands(ctx context.Context) []*cobra.Command
-}
+type CommandRegisterer = func() []*cobra.Command
 
 // Create a new runnr application.
-func NewRunner(ctx context.Context) *Runner {
+func NewRunner() *Runner {
 	runnrCmd := &cobra.Command{
 		Use: "runnr",
 	}
@@ -28,7 +25,6 @@ func NewRunner(ctx context.Context) *Runner {
 		InstanceName:  "default",
 		rootCmd:       runnrCmd,
 		registrations: nil,
-		ctx:           nil,
 	}
 }
 
@@ -36,15 +32,19 @@ func (r *Runner) AddCommand(cmd *cobra.Command) {
 	r.rootCmd.AddCommand(cmd)
 }
 
-func (r *Runner) Register(c CommandRegisterer) Registration {
-	reg := newRegistration(c.GetCommands(r.ctx))
+func (r *Runner) Register(registration CommandRegisterer) Registration {
+	reg := newRegistration(registration())
 	r.registrations = append(r.registrations, reg)
 	return reg
 }
 
-func (r *Runner) Run() error {
+func (r *Runner) ToCommand() *cobra.Command {
 	r.finalizeRegistration()
-	return r.rootCmd.ExecuteContext(r.ctx)
+	return r.rootCmd
+}
+
+func (r *Runner) Run(ctx context.Context) error {
+	return r.ToCommand().ExecuteContext(ctx)
 }
 
 func (r *Runner) finalizeRegistration() {

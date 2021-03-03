@@ -56,8 +56,7 @@ func main() {
 }
 
 func run() error {
-	ctx := context.Background()
-	runner := runnr.NewRunner(ctx)
+	runner := runnr.NewRunner()
 
 	runner.AddCommand(&cobra.Command{
 		Use: "hello",
@@ -66,7 +65,8 @@ func run() error {
 		},
 	})
 
-	return runner.Run()
+	ctx := context.Background()
+	return runner.Run(ctx)
 }
 `
 	if err := vfs.WriteFile(fs, runnerLocalAppFull, []byte(mainFileContents), 0775); err != nil {
